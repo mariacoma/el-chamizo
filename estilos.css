@@ -8,6 +8,21 @@
     box-sizing: border-box;
 }
 
+/* Aplicamos a HTML y BODY para asegurar cobertura total */
+html, body {
+    cursor: url('images/cursor2.png'), auto;
+}
+
+/* Para que los enlaces también tengan el cursor personalizado */
+a, button, .jukebox-container {
+    cursor: url('images/cursor2.png'), pointer;
+}
+
+/* Efecto al hacer clic */
+/* Esto obliga a que CUALQUIER cosa que pinches cambie el cursor */
+*:active {
+    cursor: url('images/cursor5.png'), auto !important;
+}
 
 body {
     display: flex;              /* activa flexbox */
