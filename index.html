@@ -111,38 +111,41 @@
         </audio>
     </div>
 
-    <script>
+   <script>
     const audio = document.getElementById("bg-music");
     const jukebox = document.querySelector(".jukebox-container");
+    const statusText = document.getElementById("music-status");
 
-    // 1. Al cargar la página, comprobar si la música debería estar sonando
+    // 1. Al cargar la página, recuperar estado
     window.addEventListener('load', () => {
         const isPlaying = localStorage.getItem('musicPlaying') === 'true';
-        const currentTime = localStorage.getItem('musicTime');
+        const savedTime = localStorage.getItem('musicTime');
 
-        if (currentTime) {
-            audio.currentTime = parseFloat(currentTime);
+        if (savedTime) {
+            audio.currentTime = parseFloat(savedTime);
         }
 
         if (isPlaying) {
-            // Nota: El navegador puede bloquear el play automático
-            // por lo que intentamos reproducir
-            audio.play().catch(() => {
-                console.log("El navegador bloqueó el autoplay. Se requiere un clic.");
+            // Intentar reproducir automáticamente
+            audio.play().then(() => {
+                updateUI(true);
+            }).catch(() => {
+                // Si el navegador bloquea el autoplay, volvemos a OFF
+                console.log("Autoplay bloqueado por el navegador");
                 localStorage.setItem('musicPlaying', 'false');
+                updateUI(false);
             });
-            updateUI(true);
         }
     });
 
-    // 2. Guardar el tiempo actual constantemente
+    // 2. Guardar el segundo exacto cada segundo
     setInterval(() => {
         if (!audio.paused) {
             localStorage.setItem('musicTime', audio.currentTime);
         }
     }, 1000);
 
-    // 3. Función para encender/apagar
+    // 3. Función de encendido/apagado
     function toggleMusic() {
         if (audio.paused) {
             audio.play();
@@ -156,16 +159,15 @@
     }
 
     function updateUI(playing) {
-        const status = document.getElementById("music-status");
         if (playing) {
             jukebox.classList.add("playing");
-            status.innerText = "ON";
+            statusText.innerText = "ON";
         } else {
             jukebox.classList.remove("playing");
-            status.innerText = "OFF";
+            statusText.innerText = "OFF";
         }
     }
-    </script>
+</script>
 
 </body>
 </html>
